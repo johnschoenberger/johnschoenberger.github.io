@@ -26,7 +26,7 @@ title: Homelab Docs                    # the main title
 tagline: A simple Nutanix Homelab   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  A simple Nutanix Homelab
+  A simple Nutanix Homelab.
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
 url: 'https://johnschoenberger.github.io'
@@ -83,7 +83,7 @@ theme_mode:   # [light|dark]
 img_cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: 'https://lh3.googleusercontent.com/a-/AFdZucoPvR5tulkIkXxFCBg1OE5KNhguZWtHfEshmABDMw=s192-c-rg-br100'
+avatar: 
 
 # boolean type, the global switch for ToC in posts.
 toc: true
