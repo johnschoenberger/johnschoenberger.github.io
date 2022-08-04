@@ -1,6 +1,6 @@
 ---
 title: RaspberryPi
-date: 2022-08-04 12:10:01 -500
+date: 2022-08-04 11:10:01 -500
 categories: [homelab, hardware, raspberrypi]
 tags: [servers, hardware, network, nutanix, rack, raspberrypi]
 ---
