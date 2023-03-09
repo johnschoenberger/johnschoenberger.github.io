@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 13:35:26 -400
+date: 2023-03-09 15:14:12 -400
 categories: [homelab, hardware, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -29,13 +29,12 @@ sudo yum install httpd -y
 ``` bash
 getenforce
 ```						
-If SELinux is enabled, the command returns the string Enforcing.
-
-If SELinux is disabled, the command returns the string Disabled.
+* If SELinux is Enabled; returns the string Enforcing.
+* If SELinux is Disabled; returns the string Disabled.
 
 4. To enable or disable SELinux, use the following command.
 ``` bash
-setenforce 1|0
+sudo setenforce 1|0
 ```
 
 5. Set the firewall to allow Apache access.
