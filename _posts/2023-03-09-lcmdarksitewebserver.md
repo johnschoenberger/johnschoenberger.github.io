@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 16:10:02 -400
+date: 2023-03-09 16:16:02 -400
 categories: [homelab, hardware, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -142,15 +142,11 @@ SSLCACertificateFile /etc/pki/tls/certs/intermediate.crt
 ```
 Save & Exit file
 
-Verify changes with
-``` bash
-sudo httpd -t
-```
-
 7. Create a LCM virtual host file
 ``` bash
 sudo vi /etc/httpd/conf.d/lcmrelease.conf
 ```
+
 ``` bash
 <VirtualHost *:443>
     ServerName www.yourdomain.com
@@ -164,9 +160,7 @@ sudo vi /etc/httpd/conf.d/lcmrelease.conf
     SSLCACertificateFile /etc/pki/tls/certs/intermediate.crt
 </VirtualHost>
 ```
-
-Change yourdomain.com to your domain name. 
-Save & Exit file
+Change yourdomain.com to your domain name. Save & Exit file
 
 8. Add https to firewall
 ``` bash
@@ -179,6 +173,7 @@ sudo firewall-cmd --reload
 ``` bash
 sudo systemctl enable httpd.service && sudo systemctl restart httpd.service
 ```
+
 ## Updating PE/PC cert trust chains
 ---
 The following is based on Nutanix KB-5090
