@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 17:00:02 -400
+date: 2023-03-09 17:05:02 -400
 categories: [homelab, hardware, nutanix, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -97,7 +97,7 @@ sudo yum install mod_ssl -y
 
 2. Generate a CSR and Private Key with OpenSSL
 ``` bash
-sudo openssl req -new -newkey rsa:4096 -nodes -keyout /etc/pki/tls/private/server.key -out /etc/pki/tls/private/server.csr
+sudo openssl req -new -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/server.key -out /etc/pki/tls/private/server.csr
 ```
 You will then be prompted for input regarding your CSR:
 
