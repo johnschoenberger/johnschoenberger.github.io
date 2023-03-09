@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 15:14:12 -400
+date: 2023-03-09 15:44:02 -400
 categories: [homelab, hardware, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -72,7 +72,7 @@ sudo systemctl enable httpd
 ```	
 
 11. Open a browser and enter the static IP address assigned to your web server in the search bar.
-You should receieve the Testing 123... Apache page
+You should receieve the "Testing 123..." Apache page
 
 12. Create a directory called release under the document root /var/www/html.
 ``` bash
@@ -91,7 +91,7 @@ sudo restorecon -R -v /var/www/html/release
 ---
 1. Install mod_ssl
 ``` bash 
-sudo yum install mod_ssl
+sudo yum install mod_ssl -y
 ```
 
 2. Generate a CSR and Private Key with OpenSSL
@@ -130,7 +130,7 @@ sudo vi /etc/pki/tls/certs/intermediate.crt
 sudo vi /etc/httpd/conf.d/ssl.conf
 ```
 
-Now edit the secure web server configuration file and locate/modify the directives as shown below.
+* Now edit the secure web server configuration file and locate/modify the directives as shown below.
 
 ``` bash
 SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
@@ -143,20 +143,25 @@ Save & Exit file
 
 Verify changes with
 ``` bash
- httpd -t
+sudo httpd -t
 ```
 
-7. Configure the httpd Virtual Host
+7. Create a LCM virtual host file
 ``` bash
-sudo vi /etc/httpd/conf/httpd.conf
+sudo vi /etc/httpd/conf.d/lcmrelease.conf
 ```
 ``` bash
-SSLEngine on
-SSLCertificateFile /etc/pki/tls/certs/certificate.crt
-SSLCertificateKeyFile /etc/pki/tls/private/server.key
-SSLCACertificateFile /etc/pki/tls/certs/intermediate.crt
-servername www.yourdomain.com
-Documentroot /var/www/html/release
+<VirtualHost *:443>
+    ServerName www.yourdomain.com
+    ServerAlias yourdomain.com
+    DocumentRoot /var/www/html/
+    ErrorLog /var/www/yourdomain.com/error.log
+    CustomLog /var/www/yourdomain.com/requests.log combined
+    SSLEngine on
+    SSLCertificateFile /etc/pki/tls/certs/certificate.crt
+    SSLCertificateKeyFile /etc/pki/tls/private/server.key
+    SSLCACertificateFile /etc/pki/tls/certs/intermediate.crt
+</VirtualHost>
 ```
 
 Change yourdomain.com to your domain name. Save & Exit file
