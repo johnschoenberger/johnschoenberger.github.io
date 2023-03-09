@@ -1,14 +1,14 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 16:16:02 -400
+date: 2023-03-09 16:28:02 -400
 categories: [homelab, hardware, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
 
 # LCM Darksite Web Server with SSL
 Building a LCM Darksite webserver is pretty simple using Linux. It can be done on Windows Server with IIS but I highly recommend using your favorite flavor of Linux. The following tutorial will be using Rocky Linux...
-This guide is based of the Life Cycle Manager Dark Site Guide (LCM 2.4) - Last updated: 2023-02-28
-https://portal.nutanix.com/page/documents/details?targetId=Life-Cycle-Manager-Dark-Site-Guide-v2_4:Life-Cycle-Manager-Dark-Site-Guide-v2_4
+This guide is based of the [Life Cycle Manager Dark Site Guide LCM 2.4 - Last updated: 2023-02-28](
+https://portal.nutanix.com/page/documents/details?targetId=Life-Cycle-Manager-Dark-Site-Guide-v2_4:Life-Cycle-Manager-Dark-Site-Guide-v2_4)
 
 * Build a Rocky Linux VM using minimal install
 * Set static IP address
@@ -176,9 +176,8 @@ sudo systemctl enable httpd.service && sudo systemctl restart httpd.service
 
 ## Updating PE/PC cert trust chains
 ---
-The following is based on Nutanix KB-5090
- https://portal.nutanix.com/page/documents/kbs/details?targetId=kA00e000000XewiCAC
-
+The following is based on [Nutanix KB-5090](https://portal.nutanix.com/page/documents/kbs/details?targetId=kA00e000000XewiCAC)
+ 
  Pre-Reqs:
  * Use "PEM" format.
  * Copy the CA Chain to one of the CVMs/PCVMs. In the example below, we put the file in /home/nutanix/tmp/custom_ssl/cachain.crt.
@@ -197,7 +196,8 @@ Save & Exit File
 ``` bash
 allssh 'rsync -avh <cvm_ip>:/home/nutanix/tmp/custom_ssl/cachain.crt /home/nutanix/tmp/custom_ssl/'
 ```
-4. To allow trusted certificates to persist after upgrades (As of AOS 6.1, 6.0.2, pc.2022.1, 5.20.2, 5.20.3 or newer, the certificates can be persisted in the CVM database via the following command once relevant certs are copied to a directory on the CVM/PCVM)
+4. To allow trusted certificates to persist after upgrades. > As of AOS 6.1, 6.0.2, pc.2022.1, 5.20.2, 5.20.3 or newer, the certificates can be persisted in the CVM database via the following command once relevant certs are copied to a directory on the CVM/PCVM)
+{: .prompt-tip }
 ``` bash
 pki_ca_certs_manager set -p /home/nutanix/tmp/custom_ssl/cachain.crt
 ```
