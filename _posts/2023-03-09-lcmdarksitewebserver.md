@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 16:46:02 -400
+date: 2023-03-09 16:49:02 -400
 categories: [homelab, hardware, nutanix, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -52,7 +52,7 @@ sudo firewall-cmd --reload
 sudo vi /etc/httpd/conf/httpd.conf
 ```
 
-* Make sure that httpd.conf contains the following lines. If they are commented out, uncomment them.
+Make sure that httpd.conf contains the following lines. If they are commented out, uncomment them.
 
 ``` bash
 ServerRoot "/etc/httpd"
