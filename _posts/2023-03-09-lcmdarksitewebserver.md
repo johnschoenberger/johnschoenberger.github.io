@@ -1,7 +1,7 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 16:28:02 -400
-categories: [homelab, hardware, lcm]
+date: 2023-03-09 16:46:02 -400
+categories: [homelab, hardware, nutanix, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
 
@@ -176,7 +176,7 @@ sudo systemctl enable httpd.service && sudo systemctl restart httpd.service
 
 ## Updating PE/PC cert trust chains
 ---
-The following is based on [Nutanix KB-5090](https://portal.nutanix.com/page/documents/kbs/details?targetId=kA00e000000XewiCAC)
+The following is based on [Nutanix KB-5090](https://portal.nutanix.com/kb/5090)
  
  Pre-Reqs:
  * Use "PEM" format.
@@ -201,3 +201,48 @@ allssh 'rsync -avh <cvm_ip>:/home/nutanix/tmp/custom_ssl/cachain.crt /home/nutan
 ``` bash
 pki_ca_certs_manager set -p /home/nutanix/tmp/custom_ssl/cachain.crt
 ```
+
+## Updating MSP controller cert trust chains
+---
+The following is based on [Nutanix KB-14240](https://portal.nutanix.com/kb/14240)
+> This is a internal KB; please open a ticket & work with SRE before attempting {: .prompt-warning }
+
+### Description: 
+Customers using LCM https darksite web server might notice MSP upgrades fail with the following error in msp_controller.out file
+
+``` bash
+2023-01-27 07:01:50,102Z INFO helper.py:145 (xx, update, 2ca52cfc-11eb-422a-677f-9389075e89ab) ERROR: Validate precheck failed.airgap server validation failure: Host Image not found at AirGap Server: Get "https://xxx/release//builds/msp-builds/host-images/msp-goldimages-2_4_2-3.json": x509: certificate signed by unknown authority Status Code: 500
+```
+
+The issue happens when customer uses self signed certificate for the LCM darksite web server which is not trusted by MSP controller.
+
+### Solution:
+Prior proceeding with the workaround below ensure the LCM darksite web server url is https based and customer is using untrusted certificate. This can be easily verified by opening the web server url in browser and check the certificate status. 
+
+Once confirmed the customer is using a https server with untrusted certificate follow the solution below to fix the issue.
+
+1. Follow steps above for [Nutanix KB-5090](https://portal.nutanix.com/kb/5090)
+2. Verify Prism Central is successfully able to reach the LCM darksite web server url without failing with certificate untrusted error.
+``` bash
+allssh curl <lcm_darksite_url>
+```
+Replace <lcm_darksite_url> with the url from LCM Settings webpage.
+Once the above command works without certificate errors, proceed with the next steps
+3. Take a backup of the msp-controller-config.json file by running the command below,
+``` bash
+allssh "cp /home/docker/msp_controller/bootstrap/msp-controller-config.json ~/tmp/msp-controller-config.json_backup"
+```
+4. Run the below command to replace msp-controller-config.json with a bind mount
+``` bash
+allssh "sed -i '/^\s*\"binds\".*/a \     \ \"/etc/pki:/etc/pki\",'  /home/docker/msp_controller/bootstrap/msp-controller-config.json"
+```
+5. Restart msp controller service.
+``` bash
+allssh genesis stop msp-controller; cluster start
+```
+6. Verify curl can be done inside msp-controller without certificate errors,
+``` bash
+allssh 'docker exec  msp-controller bash -c "curl <lcm_darksite_url>"'
+```
+Replace <lcm_darksite_url> with the url from LCM Settings webpage.
+Restart the LCM upgrade for MSP controller.
