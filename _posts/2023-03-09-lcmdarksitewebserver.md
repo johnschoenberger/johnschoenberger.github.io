@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-09 15:44:02 -400
+date: 2023-03-09 16:10:02 -400
 categories: [homelab, hardware, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -52,7 +52,8 @@ sudo firewall-cmd --reload
 sudo vi /etc/httpd/conf/httpd.conf
 ```
 
-Make sure that httpd.conf contains the following lines. If they are commented out, uncomment them.
+* Make sure that httpd.conf contains the following lines. If they are commented out, uncomment them.
+
 ``` bash
 ServerRoot "/etc/httpd"
 DocumentRoot "/var/www/html" #All the documents will be served under this directory hierarchy
@@ -61,26 +62,26 @@ Listen IP-address:port
 ```
 Save and Exit file
 
-9. Restart httpd.
+8. Restart httpd.
 ``` bash
 sudo systemctl restart httpd
 ```
 
-10. Enable Apache to start when the system starts.
+9. Enable Apache to start when the system starts.
 ``` bash
 sudo systemctl enable httpd
 ```	
 
-11. Open a browser and enter the static IP address assigned to your web server in the search bar.
+10. Open a browser and enter the static IP address assigned to your web server in the search bar.
 You should receieve the "Testing 123..." Apache page
 
-12. Create a directory called release under the document root /var/www/html.
+11. Create a directory called release under the document root /var/www/html.
 ``` bash
 sudo mkdir -p -m 755 /var/www/html/release
 cd /var/www/html/release
 ```	
 
-13. Optional: Set Selinux context to folder and files
+12. Optional: Set Selinux context to folder and files
 ``` bash
 sudo chmod -R 755 /var/www/html/release
 sudo semanage fcontext -a -t httpd_sys_content_t "/var/www/html/release(/.*)?"
@@ -98,7 +99,7 @@ sudo yum install mod_ssl -y
 ``` bash
 sudo openssl req -new -newkey rsa:4096 -nodes -keyout /etc/pki/tls/private/server.key -out /etc/pki/tls/private/server.csr
 ```
-You will then get a prompt asking you to input the following details regarding your CSR:-
+You will then be prompted for input regarding your CSR:
 
 * Country Name (2 letter code) [AU]: Type in the 2 letter abbreviation for your country.
 * State or Province Name (full name) [Some-State]: Full name of the state
@@ -164,7 +165,8 @@ sudo vi /etc/httpd/conf.d/lcmrelease.conf
 </VirtualHost>
 ```
 
-Change yourdomain.com to your domain name. Save & Exit file
+Change yourdomain.com to your domain name. 
+Save & Exit file
 
 8. Add https to firewall
 ``` bash
@@ -177,4 +179,30 @@ sudo firewall-cmd --reload
 ``` bash
 sudo systemctl enable httpd.service && sudo systemctl restart httpd.service
 ```
+## Updating PE/PC cert trust chains
+---
+The following is based on Nutanix KB-5090
+ https://portal.nutanix.com/page/documents/kbs/details?targetId=kA00e000000XewiCAC
 
+ Pre-Reqs:
+ * Use "PEM" format.
+ * Copy the CA Chain to one of the CVMs/PCVMs. In the example below, we put the file in /home/nutanix/tmp/custom_ssl/cachain.crt.
+ 
+ Execute the following commands to install the certificate on all CVMs and PCVMs:
+1. Create folder to store the CA chain file
+ ``` bash
+allssh 'mkdir /home/nutanix/tmp/custom_ssl/'
+ ```
+2. Copy/Paste contents of CA Chain into /home/nutanix/tmp/custom_ssl/cachain.crt
+``` bash
+vi /home/nutanix/tmp/custom_ssl/cachain.crt
+```
+Save & Exit File
+3. Copy file to all CVMs
+``` bash
+allssh 'rsync -avh <cvm_ip>:/home/nutanix/tmp/custom_ssl/cachain.crt /home/nutanix/tmp/custom_ssl/'
+```
+4. To allow trusted certificates to persist after upgrades (As of AOS 6.1, 6.0.2, pc.2022.1, 5.20.2, 5.20.3 or newer, the certificates can be persisted in the CVM database via the following command once relevant certs are copied to a directory on the CVM/PCVM)
+``` bash
+pki_ca_certs_manager set -p /home/nutanix/tmp/custom_ssl/cachain.crt
+```
