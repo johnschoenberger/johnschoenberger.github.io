@@ -103,20 +103,14 @@ sudo openssl req -new -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/serve
 {: .prompt-warning }
 
 >You will then be prompted for input regarding your CSR:
->> Country Name (2 letter code) [AU]: 2 letter country code
->>
->> State or Province Name (full name) [Some-State]: Full name of state
->> Organization Name (eg, company) [Internet Widgits Pty Ltd]: Full company name
->>
->> Locality Name (eg, city) []: Complete name of the city, no abbreviations
->>
->> Organization Name (eg, company) [Internet Widgits Pty Ltd]: If you are a business; Enter your legal entity name. If you're not a business, any value entered will not be used in your certificate.
->>
->> Organizational Unit Name (eg, section) []: If you are a business; Write the appropriate division of your company. It is best to use something generic such as "IT".
->>
->> Common Name (e.g. server FQDN or YOUR name) []: Server FQDN
->>
->> Email Address []: Your email
+>> - Country Name (2 letter code) [AU]: 2 letter country code
+>> - State or Province Name (full name) [Some-State]: Full name of state
+>> - Organization Name (eg, company) [Internet Widgits Pty Ltd]: Full company name
+>> - Locality Name (eg, city) []: Complete name of the city, no abbreviations
+>> - Organization Name (eg, company) [Internet Widgits Pty Ltd]: If you are a business; Enter your legal entity name. If you're not a business, any value entered will not be used in your certificate.
+>> - Organizational Unit Name (eg, section) []: If you are a business; Write the appropriate division of your company. It is best to use something generic such as "IT".
+>> - Common Name (e.g. server FQDN or YOUR name) []: Server FQDN
+>> - Email Address []: Your email
 >>
 >After you hit Enter, your Private Key and CSR should be saved successfully in the default ssl directory.
 
@@ -217,7 +211,7 @@ allssh 'rsync -avh <cvm_ip>:/home/nutanix/tmp/custom_ssl/cachain.crt /home/nutan
 pki_ca_certs_manager set -p /home/nutanix/tmp/custom_ssl/cachain.crt
 ```  
 
-> As of AOS 6.1, 6.0.2, pc.2022.1, 5.20.2, 5.20.3 or newer, the certificates can be persisted in the CVM database via the following command once relevant certs are copied to a directory on the CVM/PCVM.
+> As of AOS 6.1, 6.0.2, pc.2022.1, 5.20.2, 5.20.3 or newer, the certificates can be persisted in the CVM database via the above command once relevant certs are copied to a directory on the CVM/PCVM.
 {: .prompt-info }
 
 ## Updating MSP controller cert trust chains
