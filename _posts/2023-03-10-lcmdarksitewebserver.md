@@ -1,6 +1,6 @@
 ---
 title: LCM Darksite Web Server with SSL
-date: 2023-03-10 09:32:02 -400
+date: 2023-03-10 09:44:02 -400
 categories: [homelab, hardware, nutanix, lcm]
 tags: [servers, hardware, network, nutanix, rack, lcm]
 ---
@@ -98,7 +98,8 @@ sudo yum install mod_ssl -y
 ``` bash
 sudo openssl req -new -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/server.key -out /etc/pki/tls/private/server.csr
 ```
-> **RSA-4096** is currently unsupported for PC and can lead to various issues. See [Nutanix KB-12775](https://portal.nutanix.com/kb/12775)
+
+> **RSA-4096** is currently unsupported for PC and can lead to various issues. See [Nutanix KB-12775](https://portal.nutanix.com/kb/12775) for more info.
 {: .prompt-warning }
 
 >You will then be prompted for input regarding your CSR:
@@ -146,14 +147,16 @@ SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
 SSLCertificateFile /etc/pki/tls/certs/certificate.crt
 SSLCertificateKeyFile /etc/pki/tls/private/server.key
 SSLCACertificateFile /etc/pki/tls/certs/intermediate.crt
-```
+```  
+
 > Save & Exit file  
 
 7. Create a LCM virtual host file
 ``` bash
 sudo vi /etc/httpd/conf.d/lcmrelease.conf
 ```
-> Copy/Paste the following:
+> Copy/Paste the following:  
+
 ``` bash
 <VirtualHost *:443>
     ServerName www.yourdomain.com
@@ -166,7 +169,8 @@ sudo vi /etc/httpd/conf.d/lcmrelease.conf
     SSLCertificateKeyFile /etc/pki/tls/private/server.key
     SSLCACertificateFile /etc/pki/tls/certs/intermediate.crt
 </VirtualHost>
-```
+```  
+
 > Change yourdomain.com to your domain name. Save & Exit file
 
 8. Add inbound https to firewall
@@ -189,7 +193,8 @@ The following is based on [Nutanix KB-5090](https://portal.nutanix.com/kb/5090)
  * Use "PEM" certificate format.
  * Copy the CA Chain to one of the CVMs/PCVMs. In the example below, we put the file in /home/nutanix/tmp/custom_ssl/cachain.crt.
  
-> Execute the following commands to install the certificate on all CVMs and PCVMs:
+> Execute the following commands to install the certificate on all CVMs and PCVMs:  
+
 1. Create folder to store the CA chain file
  ``` bash
 allssh 'mkdir /home/nutanix/tmp/custom_ssl/'
@@ -198,7 +203,8 @@ allssh 'mkdir /home/nutanix/tmp/custom_ssl/'
 2. Copy/Paste contents of CA Chain into /home/nutanix/tmp/custom_ssl/cachain.crt
 ``` bash
 vi /home/nutanix/tmp/custom_ssl/cachain.crt
-```
+```  
+
 > Save & Exit file  
 
 3. Copy file to all CVMs and PCVMs
@@ -209,7 +215,7 @@ allssh 'rsync -avh <cvm_ip>:/home/nutanix/tmp/custom_ssl/cachain.crt /home/nutan
 4. To allow trusted certificates to persist after upgrades
 ``` bash
 pki_ca_certs_manager set -p /home/nutanix/tmp/custom_ssl/cachain.crt
-```
+```  
 
 > As of AOS 6.1, 6.0.2, pc.2022.1, 5.20.2, 5.20.3 or newer, the certificates can be persisted in the CVM database via the following command once relevant certs are copied to a directory on the CVM/PCVM.
 {: .prompt-info }
@@ -239,8 +245,9 @@ Once confirmed the customer is using a https server with untrusted certificate f
 2. Verify Prism Central is successfully able to reach the LCM darksite web server url without failing with certificate untrusted error.
 ``` bash
 allssh curl <lcm_darksite_url>
-```
-> Replace <lcm_darksite_url> with the url from LCM Settings webpage. Once the above command works without certificate errors, proceed with the next steps
+```  
+
+> Replace <lcm_darksite_url> with the url from LCM Settings webpage. Once the above command works without certificate errors, proceed with the next steps.
 
 3. Take a backup of the msp-controller-config.json file 
 ``` bash
@@ -260,5 +267,6 @@ allssh genesis stop msp-controller; cluster start
 6. Verify curl can be done inside msp-controller without certificate errors,
 ``` bash
 allssh 'docker exec  msp-controller bash -c "curl <lcm_darksite_url>"'
-```
+```  
+
 > Replace <lcm_darksite_url> with the url from LCM Settings webpage. Restart the LCM upgrade for MSP controller.
