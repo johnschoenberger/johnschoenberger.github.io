@@ -33,21 +33,23 @@ url: 'https://johnschoenberger.github.io'
 
 github:
   username: johnschoenberger            # change to your github username
-
 twitter:
   username: twitter_username            # change to your twitter username
-
+instagram:
+  username: jschoenberger05
+facebook:
+  username: john.schoenberger
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: John Schoenberger
-  email: example@doamin.com             # change to your email address
+  # email: example@doamin.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/username      # change to your twitter homepage
     - https://github.com/johnschoenberger       # change to your github homepage
     # Uncomment below to add more social links
-    # - https://www.facebook.com/username
+    - https://www.facebook.com/john.schoenberger
     - https://www.linkedin.com/in/jschoenberger
 
 google_site_verification:               # fill in to your verification string
